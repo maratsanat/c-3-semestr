@@ -23,6 +23,7 @@ public:
 
     subforwardlist(const subforwardlist& other) : begin(nullptr) {
         Node* other_current = other.begin;
+        // Перед этим стоит сделать resize(other.capacity), иначе непонятно сколько раз на push_back будет перевыделяться 
         while (other_current) {
             push_back(other_current->data);
             other_current = other_current->next;
@@ -33,6 +34,7 @@ public:
         if (this != &other) {
             clear();
             Node* other_current = other.begin;
+            // Перед этим стоит сделать resize(other.capacity), иначе непонятно сколько раз на push_back будет перевыделяться 
             while (other_current) {
                 push_back(other_current->data);
                 other_current = other_current->next;
@@ -40,6 +42,7 @@ public:
         }
         return *this;
     }
+// А вообще оператор приваивания -- это copy + swap
 
     subforwardlist(subforwardlist&& other) : begin(other.begin) {
         other.begin = nullptr;
@@ -154,6 +157,7 @@ public:
         }
         return count;
     }
+// Во всех методах выше можно использовать один метод "найти указатель на ноду с индексом i", чтобы не дублировать подряд один и тот же код и не плодить ошибок типа "тут исправил -- там забыл".
 
     void clear() {
         while (begin) {
@@ -162,6 +166,9 @@ public:
             delete temp;
         }
     }
+// Было бы неплохо, если бы ещё и указатель begin занулялся (nullptr). Потому что в противном случае не будет работать методы pop_back, pop_forward, push_back и проч.
+// Они не будут работать в сцении vec.clear(); v.push_back(0); Можешь проверить.
+// Либо указатель можно не занулять, но тогда этот метод не должен быть доступен пользователю извне, то есть быть приватным
 };
 
 using list = subforwardlist<int>;
@@ -431,4 +438,5 @@ int main()
     delete[] four_ways_test;
 
     return 0;
+
 }
