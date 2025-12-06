@@ -8,6 +8,7 @@ template<typename T>
 class Matrix {
     std::vector<T> data;
     unsigned _rows, _cols;
+// нижние подчеркивания лучше ставить после имени переменных, так как могут быть случайные пересечения с названиями макросов
 
 public:
     Matrix(unsigned rows, unsigned cols, T value = 0) : _rows(rows), _cols(cols), data(rows * cols, value) {}
@@ -20,6 +21,7 @@ public:
         return m;
     }
 
+// Функция генерирует случайную матрицу, детерминан не совпадает с переданным, см коммент в mr
     static Matrix getSpecificDeterminant(unsigned n, T target_det) {
         std::mt19937 gen(std::chrono::steady_clock::now().time_since_epoch().count());
         std::uniform_real_distribution<T> dist(0.5, 1.5);
@@ -73,6 +75,8 @@ public:
         }
         return temp;
     }
+// Два метода транспонирования делают фактически одно и то же. Можно реализовать один через другой
+
 
     void swapRows(unsigned i, unsigned j) {
         for(unsigned k = 0; k < _cols; k++) {
@@ -93,6 +97,7 @@ public:
     }
 };
 
+// Раз уж у нас появилось gaussianElimination, то деретминант можно через него посчитать, там код один и тот же
 template<typename T>
 T determinant(const Matrix<T>& mat) {
     unsigned n = mat.rows();
@@ -121,6 +126,7 @@ T determinant(const Matrix<T>& mat) {
         
         for(unsigned j = i + 1; j < n; j++) {
             T factor = m(j, i) / m(i, i);
+            // Вычитание строк тоже можно вынести в отдельный метод 
             for(unsigned k = i + 1; k < n; k++) {
                 m(j, k) -= factor * m(i, k);
             }
@@ -155,7 +161,7 @@ std::vector<T> gaussianElimination(Matrix<T> A, std::vector<T> b) {
             b[j] -= factor * b[i];
         }
     }
-    
+
     std::vector<T> x(n, 0);
     for(int i = n - 1; i >= 0; i--) {
         T sum = b[i];
@@ -240,7 +246,7 @@ int main() {
         for(unsigned j = 0; j < n; j++) {
             A(i, j) = dis(gen);
         }
-        A(i, i) += 20.0;
+        A(i, i) += 20.0;  // FYI: это сдвигает спектор матрицы врпаво и решалка становится более устойствой :-)
     }
     
     std::vector<double> b(n);
@@ -257,4 +263,5 @@ int main() {
     std::cout << "Residual norm ||Ax - b||: " << norm << std::endl;
     
     return 0;
+
 }
