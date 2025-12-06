@@ -17,7 +17,7 @@ public:
 
     subvector(const subvector& other) : mas(nullptr), top(0), capacity(0) {
         if (other.capacity > 0) {
-            mas = new T[other.capacity];
+            mas = new T[other.capacity];        // можно загнать в список инициализации
             capacity = other.capacity;
             top = other.top;
             for (unsigned int i = 0; i < top; i++) {
@@ -79,7 +79,7 @@ public:
         }
         
         T* new_mas = new T[new_capacity];
-        unsigned int elements_to_copy = (top < new_capacity) ? top : new_capacity;
+        unsigned int elements_to_copy = (top < new_capacity) ? top : new_capacity;  // это можно сразу в top записать
         
         for (unsigned int i = 0; i < elements_to_copy; i++) {
             new_mas[i] = mas[i];
@@ -93,6 +93,7 @@ public:
         return true;
     }
 
+    // Кажется, что это функция -- просто resize(top), таким надо пользоваться, чтобы не плодить ошибок "тут поменял -- там забыл"
     void shrink_to_fit() {
         if (top == 0) {
             delete[] mas;
@@ -256,4 +257,5 @@ int main()
     delete[] pop_push_sequence_push;
     delete[] pop_push_sequence_pushpush;
     return 0;
+
 }
